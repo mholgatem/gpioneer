@@ -39,7 +39,7 @@ fi
 UDEV='SUBSYSTEM=="input", ATTRS{name}=="GPioneer", ENV{ID_INPUT_KEYBOARD}="1"'
 echo $UDEV > /etc/udev/rules.d/10-GPioneer.rules
 #add uinput to modules if not already there
-if ! grep --quiet "uinput" /etc/modules; then 'uinput' >> /etc/modules; fi
+if ! grep --quiet "uinput" /etc/modules; then echo "uinput" >> /etc/modules; fi
 
 echo "-----------------"
 echo "${CYAN}Would you like to run the configuration now?${NONE} [y/n]"

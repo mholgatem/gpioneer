@@ -371,6 +371,16 @@ class Gpioneer (object):
 		
 	#------------------------ CONFIG FUNCTIONS ---------------------------------
 	#---------------------------------------------------------------------------
+	def get_control_name(self):
+		if self.controls[self.index][0] == '*':
+			control_name = self.current_control[1:]
+		else:
+			prefix = 'P' + str(self.current_player + 1) + '_'
+			control_name = prefix + self.current_control
+		
+		return control_name
+		
+		
 	def add_channel(self, channel):
 		if not channel in self.current_channel_list:
 			self.current_channel_list.append(channel)
@@ -391,18 +401,28 @@ class Gpioneer (object):
 												len(self.keys['BUTTONS']) - 1)
 				
 				#set arbitrary control name (for id in database)
-				if self.controls[self.index][0] == '*':
-					control_name = self.current_control[1:]
-				else:
-					prefix = 'P' + str(self.current_player + 1) + '_'
-					control_name = prefix + self.current_control
-					
-				#add info to button mapping
-				channels = str(self.current_channel).strip('[]')
-				self.current_player_mapping.append([control_name, key, channels])
+				control_name = self.get_control_name()
+
+
+
+
+
 				
-				print 'mapped to %s' % pcolor('cyan', key)
-				print '----------------'
+				#add info to button mapping
+				if self.current_channel != self.skipKey:
+					channels = str(self.current_channel).strip('[]')
+					self.current_player_mapping.append([control_name, key, channels])
+
+					print 'mapped to %s' % pcolor('cyan', key)
+					print '----------------'
+				else:
+					print 'Skipping current control'
+					print '----------------'
+				
+				if control_name == "P1_UP": 
+					self.skipKey = self.current_channel
+					print pcolor('fuschia', 'Press P1_UP (x2) to bypass any config')
+					print '---------------'
 				
 				#proceed to next button
 				#else: prompt to configure another player
@@ -427,31 +447,14 @@ class Gpioneer (object):
 						self.running = False
 			else:
 				self.previous_channel = self.current_channel
-			
-			
-	def check_requirements(self):
-		changes_made = False
-		if not os.path.isfile('/etc/udev/rules.d/10-GPioneer.rules'):
-			with open('/etc/udev/rules.d/10-GPioneer.rules', 'w') as f:
-				f.write('SUBSYSTEM=="input", ATTRS{name}=="GPioneer", ENV{ID_INPUT_KEYBOARD}="1"')
-				print 'Added /etc/udev/rules.d/10-GPioneer.rules'
-				changes_made = True
-		with open('/etc/modules', 'a+') as f:
-			if not 'uinput' in f.read():
-				f.write('uinput')
-				print 'Added uinput to /etc/modules'
-				changes_made = True
-		if changes_made: 
-			answer = self.prompt('System changes made, restart now?', 10.0)
-			if answer: os.system('/sbin/shutdown -r now')
-		
-		
+
+
 	def configure(self):
 		os.system('clear')
-		self.check_requirements()
 		self.current_control = None
 		self.current_channel = None
 		self.previous_channel = None
+		self.skipKey = None
 		self.current_player_mapping = []
 		self.index = 0
 		self.current_channel_list = []
