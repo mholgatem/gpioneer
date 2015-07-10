@@ -8,7 +8,11 @@ from flask.ext.admin.contrib.sqla import ModelView
 import sys
 import subprocess
 
-
+	
+if (os.path.isfile('/etc/supervisor/conf.d/gunicorn.conf') and
+	os.path.isfile('/etc/supervisor/conf.d/pimame_menu.conf')):
+	 quit()
+	
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///local.db'
@@ -60,8 +64,4 @@ if __name__ == '__main__':
 	if 'DEBUG' in os.environ:
 		app.debug = True
 	app.debug = True
-	
-	
-	if (not os.path.isfile('/etc/supervisor/conf.d/gunicorn.conf') and
-		not os.path.isfile('/etc/supervisor/conf.d/pimame_menu.conf')):
-			app.run(host="0.0.0.0", port=80)
+	app.run(host="0.0.0.0", port=80)
