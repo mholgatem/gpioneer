@@ -91,7 +91,7 @@ def pcolor(color, string):
 #--------------------------- BUTTON OBJECT -------------------------------------
 #-------------------------------------------------------------------------------
 class button(object):
-	def __init__(self, name, pin, command):
+	def __init__(self, name, pin, commands):
 		self.name = name
 		self.pin = eval(pin + ',')
 		self.is_combo = True if len(self.pin) > 1 else False
@@ -99,11 +99,11 @@ class button(object):
 		self.pressed = 0
 		self.key = []
 		self.command = []
-		for entry in command.split('|'):
-			if 'KEY' in command[:3]:
-				self.key.append('e.' + command.upper())
+		for entry in commands.split('|'):
+			if 'KEY' in entry[:3]:
+				self.key.append('e.' + entry.upper())
 			else:
-				self.command.append(command)
+				self.command.append(entry)
 
 		self.mask = 0L
 		try:
@@ -403,11 +403,6 @@ class Gpioneer (object):
 				#set arbitrary control name (for id in database)
 				control_name = self.get_control_name()
 
-
-
-
-
-				
 				#add info to button mapping
 				if self.current_channel != self.skipKey:
 					channels = str(self.current_channel).strip('[]')

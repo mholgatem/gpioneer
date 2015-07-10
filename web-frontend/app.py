@@ -9,9 +9,8 @@ import sys
 import subprocess
 
 	
-if (os.path.isfile('/etc/supervisor/conf.d/gunicorn.conf') and
-	os.path.isfile('/etc/supervisor/conf.d/pimame_menu.conf')):
-	 quit()
+if os.path.isfile('/etc/supervisor/conf.d/gunicorn.conf'):
+	quit()
 	
 app = Flask(__name__)
 
