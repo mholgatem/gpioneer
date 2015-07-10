@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+      
+	{% block content %}
+    <style>
+      @import "/static/css/demo_table.css";
+      @import "/static/css/dropzone/basic.css";
+      @import "/static/css/dropzone/dropzone.css";
+    </style>
+
+      <h1>{{ system_label }} <small>Rom Manager</small></h1>
+
+        <form id="my-awesome-dropzone" action="{{system_path}}" method="post" class="dropzone"></form>
+
+        <p>
+          {% if files %}
+
+            <table class="table--rom_list table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>File Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for f in files %}
+                  <tr><td>{{f}}</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+          {% else %}
+          <div class="alert alert-warning">
+            <p><i class="glyphicon glyphicon-info-sign"></i> <strong>No roms exist for this emulator - better get uploadin', playa!</strong></p>
+          </div>
+          {% endif %}
+
+    {% endblock %}
+
+    {% block script %}
+
+    <script src="/static/js/dropzone.js"></script>
+    <script src="/static/js/jquery.dataTables.js"></script>
+
+    <script>
+      $(document).ready(function() {
+          $('.table--rom_list').dataTable();
+      } );
+    </script>
+
+    {% endblock %}

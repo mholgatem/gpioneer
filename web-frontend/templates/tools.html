@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+      
+	{% block content %}
+
+        <h1>Tools</h1>
+
+        <p>
+          {% if msg %}
+            {{msg}}
+          {% endif %}
+        </p>
+        <p>
+          <a href="/tools/reboot" class="btn btn-primary btn-lg active" role="button"><i class="glyphicon glyphicon-repeat"></i> Reboot</a>
+        </p>
+        <p>
+          <a href="/tools/shutdown" class="btn btn-primary btn-lg active" role="button"><i class="glyphicon glyphicon-off"></i> Shutdown</a>
+        </p>
+
+    {% endblock %}
