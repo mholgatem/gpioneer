@@ -90,9 +90,9 @@ read USER_INPUT
 #if yes, run gpioneer config
 if [[ ! -z $(echo ${USER_INPUT} | grep -i y) ]]; then
 sudo python GPioneer.py -c
-sudo python GPioneer.py &
 clear
 fi
+sudo python GPioneer.py &
 
 
 echo "-------------> Setup Complete!"
