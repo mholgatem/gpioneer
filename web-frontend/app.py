@@ -10,7 +10,7 @@ import subprocess
 
 	
 if os.path.isfile('/etc/supervisor/conf.d/gunicorn.conf'):
-	quit()
+	sys.exit()
 	
 app = Flask(__name__)
 

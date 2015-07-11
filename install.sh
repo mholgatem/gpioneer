@@ -5,30 +5,40 @@ SCRIPT=$(readlink -f $0)
 SCRIPTPATH=`dirname $SCRIPT`
 cd $SCRIPTPATH
 
+
+#if not root user, restart script as root
 if [ "$(whoami)" != "root" ]; then
 	echo "Switching to root user..."
 	sudo bash $SCRIPT
 	exit 1
 fi
 
-echo "Installing Dependencies..."
+#set constants
+IP="$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')"
+NONE='\033[00m'
+CYAN='\033[36m'
+FUSCHIA='\033[35m'
+UNDERLINE='\033[4m'
+
+echo "Running Update..."
 
 #install dependencies
 sudo apt-get update
+echo
+echo "Installing Dependencies..."
+echo
 sudo apt-get -y install python python-dev python-requests python-pip
 sudo apt-get -y install supervisor gunicorn sqlite3
 sudo pip install flask pyyaml flask-sqlalchemy flask-admin evdev
 
-#Create supervisor/gunicorn config
-match="\[program:gunicorn\]"
+#Create supervisor/gunicorn-gpioneer config
+match="\[program:gpioneer-web\]"
 insert="directory="$SCRIPTPATH"/web-frontend/"
-file="web-frontend/gunicorn-gpioneer.conf"
-sed "s|$match|$match\n$insert|" $file > /etc/supervisor/conf.d/gunicorn-gpioneer.conf
-sudo supervisorctl reload
+file="web-frontend/gpioneer-web.conf"
+sed "s|$match|$match\n$insert|" $file > /etc/supervisor/conf.d/gpioneer-web.conf
 
 #add GPioneer.py to /etc/rc.local
-if ! grep --quiet "GPioneer.py" /etc/rc.local
-then
+if ! grep --quiet "GPioneer.py" /etc/rc.local; then
 match="exit 0"
 insert="python "$SCRIPTPATH"/GPioneer.py"
 file="/etc/rc.local"
@@ -41,22 +51,49 @@ echo $UDEV > /etc/udev/rules.d/10-GPioneer.rules
 #add uinput to modules if not already there
 if ! grep --quiet "uinput" /etc/modules; then echo "uinput" >> /etc/modules; fi
 
+#add to piplay web app if present
+file="/home/pi/pimame/pimame-web-frontend/app.py"
+if [ -e $file ]; then
+if ! grep --quiet "GPioneer" $file; then
+echo "Patching Piplay Web-Frontend"
+match="import os"
+insert="import subprocess"
+file="/home/pi/pimame/pimame-web-frontend/app.py"
+sed -i "s@$match@$match\n$insert@" $file
+match="db.create_scoped_session()"
+insert="class GPioneer(db.Model):\n\
+    __tablename__ = 'gpioneer'\n\
+    __bind_key__ = 'config'\n\
+    id = db.Column(db.Integer, primary_key=True)\n\
+    name = db.Column(db.Text)\n\
+    command = db.Column(db.Text)\n\
+    pins = db.Column(db.Text)\n\
+\n\
+    def __unicode__(self):\n\
+        return self.name"
+file="/home/pi/pimame/pimame-web-frontend/app.py"
+sed -i "s|$match|$match\n\n\n$insert|" $file
+match="admin.add_view(CustomModelView(LocalRoms, db.session))"
+insert="if subprocess.check_output('/sbin/udevadm info --export-db | grep -i gpioneer; exit 0', stderr=subprocess.STDOUT, shell=True):\n\
+    admin.add_view(CustomModelView(GPioneer, db.session))"
+file="/home/pi/pimame/pimame-web-frontend/app.py"
+sed -i "s@$match@$match\n$insert@" $file
+fi
+fi
+sudo supervisorctl reload
+
 echo "-----------------"
 echo "${CYAN}Would you like to run the configuration now?${NONE} [y/n]"
 echo "-----------------"
 read USER_INPUT
 
+#if yes, run gpioneer config
 if [[ ! -z $(echo ${USER_INPUT} | grep -i y) ]]; then
 sudo python GPioneer.py -c
+clear
 fi
 
-IP="$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')"
-NONE='\033[00m'
-CYAN='\033[36m'
-FUSCHIA='\033[35m'
-UNDERLINE='\033[4m'
 
-clear
 echo "-------------> Setup Complete!"
 echo 
 echo "Type your Pi's IP address into a web browser to customize GPioneer"
