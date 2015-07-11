@@ -40,7 +40,7 @@ sed "s|$match|$match\n$insert|" $file > /etc/supervisor/conf.d/gpioneer-web.conf
 #add GPioneer.py to /etc/rc.local
 if ! grep --quiet "GPioneer.py" /etc/rc.local; then
 match="exit 0"
-insert="python "$SCRIPTPATH"/GPioneer.py"
+insert="python "$SCRIPTPATH"/GPioneer.py &"
 file="/etc/rc.local"
 sed -i "s|$match|$insert\n$match|" $file
 fi
@@ -90,6 +90,7 @@ read USER_INPUT
 #if yes, run gpioneer config
 if [[ ! -z $(echo ${USER_INPUT} | grep -i y) ]]; then
 sudo python GPioneer.py -c
+sudo python GPioneer.py &
 clear
 fi
 
