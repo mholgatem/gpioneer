@@ -83,7 +83,7 @@ fi
 sudo supervisorctl reload
 
 echo "-----------------"
-echo "${CYAN}Would you like to run the configuration now?${NONE} [y/n]"
+echo -e "${CYAN}Would you like to run the configuration now?${NONE} [y/n]"
 echo "-----------------"
 read USER_INPUT
 
