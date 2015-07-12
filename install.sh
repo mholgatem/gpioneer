@@ -39,10 +39,11 @@ sed "s|$match|$match\n$insert|" $file > /etc/supervisor/conf.d/gpioneer-web.conf
 
 #add GPioneer.py to /etc/rc.local
 if ! grep --quiet "GPioneer.py" /etc/rc.local; then
+echo 'editing rc.local'
 match="exit 0"
-insert="python "$SCRIPTPATH"/GPioneer.py &"
+insert="python "$SCRIPTPATH"/GPioneer.py &/dev/null\ndisown"
 file="/etc/rc.local"
-sed -i "s|$match|$insert\n$match|" $file
+sed -i "s|^$match$|$insert\n$match|" $file
 fi
 
 #create Udev rule for SDL2 applications
@@ -92,7 +93,7 @@ if [[ ! -z $(echo ${USER_INPUT} | grep -i y) ]]; then
 sudo python GPioneer.py -c
 clear
 fi
-sudo python GPioneer.py &
+sudo python GPioneer.py &>/dev/null &
 
 
 echo "-------------> Setup Complete!"
