@@ -34,7 +34,7 @@ sudo pip install flask pyyaml flask-sqlalchemy flask-admin evdev
 #Create supervisor/gunicorn-gpioneer config
 match="\[program:gpioneer-web\]"
 insert="directory="$SCRIPTPATH"/web-frontend/"
-file="web-frontend/gpioneer-web.conf"
+file=$SCRIPTPATH"/web-frontend/gpioneer-web.conf"
 sed "s|$match|$match\n$insert|" $file > /etc/supervisor/conf.d/gpioneer-web.conf
 
 #add GPioneer.py to /etc/rc.local
