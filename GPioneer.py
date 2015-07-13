@@ -211,7 +211,8 @@ class Gpioneer (object):
 		
 		#use current folder if piplay not installed
 		if not os.path.isdir(self.DATABASE_PATH):
-			self.DATABASE_PATH = os.path.join(os.path.realpath(sys.argv[0]),'web-frontend/')
+			temp = os.path.realpath(os.path.dirname(sys.argv[0]))
+			self.DATABASE_PATH = os.path.join(temp,'web-frontend/')
 			
 		self.CONFIG = sqlite3.connect(os.path.join(self.DATABASE_PATH, 'config.db'), 
 																check_same_thread=False)
