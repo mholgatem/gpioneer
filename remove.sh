@@ -28,15 +28,15 @@ echo
 sudo rm -r /etc/supervisor/conf.d/gpioneer-web.conf
 sudo rm -r /etc/udev/rules.d/10-GPioneer.rules
 
-#add GPioneer.py to /etc/rc.local
+#remove GPioneer.py from /etc/rc.local
 if grep --quiet "GPioneer.py" /etc/rc.local; then
 echo 'editing rc.local'
 file="/etc/rc.local"
-sed -i "/GPioneer.py/s/^.*$//" $file1
+sed -ni '1h;1!H;${;g;s/GPioneer.py.*\ndisown//g;p;}' $file
 fi
 
 
-#add to piplay web app if present
+#remove from piplay web app if present
 file="/home/pi/pimame/pimame-web-frontend/app.py"
 if [ -e $file ]; then
   if grep --quiet "GPioneer" $file; then
@@ -47,6 +47,7 @@ if [ -e $file ]; then
   fi
 else
 	sudo apt-get -y remove supervisor gunicorn
+	sudo apt-get autoremove
 fi
 
 
@@ -55,7 +56,7 @@ file2="/home/pi/.profile"
 if grep --quiet "retrogame" $file1 $file2; then
   echo "-----------------"
   echo "retrogame utility detected..."
-  echo "Enable retrogame on startup? [y/n] (this can be undone)"
+  echo "Enable retrogame on startup? [y/n]"
   echo "-----------------"
   read USER_INPUT
   if [[ ! -z $(echo ${USER_INPUT} | grep -i y) ]]; then
