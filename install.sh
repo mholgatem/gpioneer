@@ -83,6 +83,29 @@ fi
 fi
 sudo supervisorctl reload
 
+file1="/etc/rc.local"
+file2="/home/pi/.profile"
+if grep --quiet "retrogame" $file1 $file2; then
+  echo "-----------------"
+  echo "retrogame utility detected..."
+  echo "Disable retrogame on startup? [y/n] (this can be undone)"
+  echo "-----------------"
+  read USER_INPUT
+  if [[ ! -z $(echo ${USER_INPUT} | grep -i y) ]]; then
+    if grep --quiet "retrogame" $file1; then
+      echo "disabling retrogame in $file1"
+      sed -i "/retrogame/s/^#*/: #/" $file1
+      #how to uncomment: sed '/retrogame/s/^#//'
+    fi
+	if grep --quiet "retrogame" $file2; then
+      echo "disabling retrogame in $file2"
+      sed -i "/retrogame/s/^#*/: #/" $file2
+      #how to uncomment: sed '/retrogame/s/^#//'
+    fi
+  fi
+fi
+
+
 echo "-----------------"
 echo -e "${CYAN}Would you like to run the configuration now?${NONE} [y/n]"
 echo "-----------------"
