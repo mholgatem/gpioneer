@@ -299,7 +299,8 @@ class Gpioneer (object):
 	
 	def exec_command(self, commands):
 		for command in commands:
-			subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+			subprocess.Popen(command, shell=True)
+			time.sleep(self.KEY_DELAY)
 			
 			
 			
