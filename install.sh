@@ -51,6 +51,8 @@ UDEV='SUBSYSTEM=="input", ATTRS{name}=="GPioneer", ENV{ID_INPUT_KEYBOARD}="1"'
 echo $UDEV > /etc/udev/rules.d/10-GPioneer.rules
 #add uinput to modules if not already there
 if ! grep --quiet "uinput" /etc/modules; then echo "uinput" >> /etc/modules; fi
+#add evdev to modules if not already there
+if ! grep --quiet "evdev" /etc/modules; then echo "evdev" >> /etc/modules; fi
 
 #add to piplay web app if present
 file="/home/pi/pimame/pimame-web-frontend/app.py"
