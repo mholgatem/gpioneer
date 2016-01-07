@@ -41,7 +41,7 @@ sed "s|$match|$match\n$insert|" $file > /etc/supervisor/conf.d/gpioneer-web.conf
 if ! grep --quiet "GPioneer.py" /etc/rc.local; then
 echo 'editing rc.local'
 match="exit 0"
-insert="python "$SCRIPTPATH"/GPioneer.py \&>/dev/null \&\ndisown"
+insert="python "$SCRIPTPATH"/GPioneer.py \&>/dev/null \&"
 file="/etc/rc.local"
 sed -i "s|^$match$|$insert\n$match|" $file
 fi
