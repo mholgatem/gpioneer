@@ -202,8 +202,8 @@ class Gpioneer (object):
 	def __init__(self, args):
 		
 		#set signal handlers
-		signal.signal(signal.SIGINT, self.signal_handler)
-		signal.signal(signal.SIGTERM, self.signal_handler)
+		for sig in [signal.SIGTERM, signal.SIGHUP, signal.SIGQUIT, signal.SIGKILL]:
+			signal.signal(sig, signal_handler)
 
 		#Connect to database
 		path = '/home/pi/pimame/pimame-menu/database/'
