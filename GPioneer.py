@@ -203,7 +203,7 @@ class Gpioneer (object):
 		
 		#set signal handlers
 		for sig in [signal.SIGTERM, signal.SIGHUP, signal.SIGQUIT, signal.SIGKILL]:
-			signal.signal(sig, signal_handler)
+			signal.signal(sig, self.signal_handler)
 
 		#Connect to database
 		path = '/home/pi/pimame/pimame-menu/database/'
