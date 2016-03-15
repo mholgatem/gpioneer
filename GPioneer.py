@@ -202,7 +202,7 @@ class Gpioneer (object):
 	def __init__(self, args):
 		
 		#set signal handlers
-		for sig in [signal.SIGTERM, signal.SIGHUP, signal.SIGQUIT, signal.SIGKILL]:
+		for sig in [signal.SIGTERM, signal.SIGHUP, signal.SIGQUIT, signal.SIGINT]:
 			signal.signal(sig, self.signal_handler)
 
 		#Connect to database
