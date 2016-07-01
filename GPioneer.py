@@ -133,6 +133,7 @@ class Gpioneer (object):
 	
 	
 	def signal_handler(self, signal, frame):
+		self.ui.close()
 		pins = [pin['#'] for pin in self.PIN_LIST]
 		GPIO.cleanup(pins)
 		print
@@ -367,8 +368,8 @@ class Gpioneer (object):
 					self.update = False
 					self.compare_bitmask()
 		except KeyboardInterrupt:
-			GPIO.cleanup(self.PIN_LIST)       # clean up GPIO on CTRL+C exit
-		GPIO.cleanup(self.PIN_LIST)           # clean up GPIO on normal exit
+			raise       # clean up GPIO on CTRL+C exit
+		sys.exit(2)
 
 		
 	#------------------------ CONFIG FUNCTIONS ---------------------------------
