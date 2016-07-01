@@ -508,5 +508,5 @@ class Gpioneer (object):
 				self.current_channel_list = []
 
 
-
-a = Gpioneer(args)
+if __name__ == "__main__":
+	a = Gpioneer(args)
