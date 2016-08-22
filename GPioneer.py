@@ -157,7 +157,7 @@ class Gpioneer (object):
             DEBUG("GPIO mode: BCM")
             #Use SoC CHANNEL REVISION NUMBERS 
             GPIO.setmode(GPIO.BCM)
-        else
+        else:
             DEBUG("GPIO mode: BOARD")
             #Use P1 Header pin numbering
             GPIO.setmode(GPIO.BOARD)
@@ -466,7 +466,8 @@ class Gpioneer (object):
 
 
     def configure(self):
-        os.system('clear')
+        if not args.debug:
+            os.system('clear')
         DEBUG("STARTING CONFIGURATION MODE")
         self.current_control = None
         self.current_channel = None
