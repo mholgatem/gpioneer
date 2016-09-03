@@ -28,24 +28,22 @@ echo
 echo "Installing Dependencies..."
 echo
 sudo apt-get -y install python python-dev python-requests python-pip
-sudo apt-get -y install supervisor gunicorn sqlite3
-sudo pip install flask pyyaml flask-sqlalchemy flask-admin evdev
+sudo apt-get -y install sqlite3
+sudo pip install flask flask-sqlalchemy flask-admin evdev
 sudo pip install evdev --upgrade
 
-#Create supervisor/gunicorn-gpioneer config
-match="\[program:gpioneer-web\]"
-insert="directory="$SCRIPTPATH"/web-frontend/"
-file=$SCRIPTPATH"/web-frontend/gpioneer-web.conf"
-sed "s|$match|$match\n$insert|" $file > /etc/supervisor/conf.d/gpioneer-web.conf
+#add gpioneer.service to systemd
+file1=$SCRIPTPATH"/gpioneer.service"
+cp $file1 /lib/systemd/system/
+systemctl enable gpioneer
 
-#add GPioneer.py to /etc/rc.local
-if ! grep --quiet "GPioneer.py" /etc/rc.local; then
-echo 'editing rc.local'
-match="exit 0"
-insert="python "$SCRIPTPATH"/GPioneer.py \&>/dev/null \&"
-file="/etc/rc.local"
-sed -i "s|^$match$|$insert\n$match|" $file
+#add gpioneer-web.service if piplay not found
+if ! [ -e "/home/pi/pimame/"]; then
+	file2=$SCRIPTPATH"/gpioneer-web.service"
+	cp $file2 /lib/systemd/system/
+	systemctl enable gpioneer-web
 fi
+
 
 #create Udev rule for SDL2 applications
 UDEV='SUBSYSTEM=="input", ATTRS{name}=="GPioneer", ENV{ID_INPUT_KEYBOARD}="1"'
@@ -83,9 +81,10 @@ insert="if subprocess.check_output('/sbin/udevadm info --export-db | grep -i gpi
 file="/home/pi/pimame/pimame-web-frontend/app.py"
 sed -i "s@$match@$match\n$insert@" $file
 fi
-fi
 sudo supervisorctl reload
+fi
 
+# remove retrogame
 file1="/etc/rc.local"
 file2="/home/pi/.profile"
 if grep --quiet "retrogame" $file1 $file2; then
@@ -119,8 +118,8 @@ if [[ ! -z $(echo ${USER_INPUT} | grep -i y) ]]; then
 sudo python GPioneer.py -c
 clear
 fi
-sudo python GPioneer.py &>/dev/null &
-
+systemctl start gpioneer
+systemctl start gpioneer-web
 
 echo "-------------> Setup Complete!"
 echo 
