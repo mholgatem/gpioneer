@@ -1,0 +1,14 @@
+[Unit]
+Description=gpioneer-daemon
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/gpioneer
+ExecStart=/usr/bin/python -u GPioneer.py
+Restart=on-failure
+RestartSec=1
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
