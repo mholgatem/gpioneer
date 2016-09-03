@@ -30,6 +30,7 @@ echo
 sudo apt-get -y install python python-dev python-requests python-pip
 sudo apt-get -y install supervisor gunicorn sqlite3
 sudo pip install flask pyyaml flask-sqlalchemy flask-admin evdev
+sudo pip install evdev --upgrade
 
 #Create supervisor/gunicorn-gpioneer config
 match="\[program:gpioneer-web\]"
