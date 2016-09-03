@@ -274,9 +274,9 @@ class Gpioneer (object):
         else:
             self.main()
 
-     def reload(self, sig, frame):
+    def reload(self, sig, frame):
         ''' systemctl reload GPioneer '''
-        print "reloading GPioneer"
+
         self.bitMask = 0L
         self.update = False
         query = 'SELECT name, pins, command FROM gpioneer'
