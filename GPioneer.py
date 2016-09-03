@@ -142,7 +142,9 @@ class Gpioneer (object):
     
     def signal_handler(self, signal, frame):
         DEBUG("Shutting down. Received signal {0}".format(signal))
+        DEBUG("Closing GPioneer virtual device")
         self.ui.close()
+        DEBUG("Closing GPIO Pins")
         pins = [pin['#'] for pin in self.PIN_LIST]
         GPIO.cleanup(pins)
         print
@@ -218,8 +220,9 @@ class Gpioneer (object):
         
         #set signal handlers
         DEBUG("Initializing SIGNAL HANDLERS")
-        for sig in [signal.SIGTERM, signal.SIGHUP, signal.SIGQUIT, signal.SIGINT]:
+        for sig in [signal.SIGTERM, signal.SIGQUIT, signal.SIGINT]:
             signal.signal(sig, self.signal_handler)
+        signal.signal(signal.SIGHUP, self.reload)
 
         #Connect to database
         path = '/home/pi/pimame/pimame-menu/database/'
@@ -271,7 +274,32 @@ class Gpioneer (object):
         else:
             self.main()
 
-            
+     def reload(self, sig, frame):
+        ''' systemctl reload GPioneer '''
+        print "reloading GPioneer"
+        self.bitMask = 0L
+        self.update = False
+        query = 'SELECT name, pins, command FROM gpioneer'
+        temp = self.CC.execute(query).fetchall()
+        self.button_map = {}
+        
+        #Create list of commands for each button
+        #if same button assigned to multiple commands
+        #we will iterate over each command/key
+        if not temp:
+            print 'No pins set! Please run configuration! sudo python Gpioneer -c'
+            sys.exit()
+        for entry in temp:
+            temp_button = button(entry[0], entry[1], entry[2])
+            if temp_button.mask in self.button_map:
+                self.button_map[temp_button.mask].append(entry[2])
+            else:
+                self.button_map[temp_button.mask] = temp_button
+        #sort button_map, combos first
+        self.button_map = sorted([value 
+                                for key, value in self.button_map.iteritems()], 
+                                key = lambda x: x.is_combo, reverse = True)
+
     def prompt(self, text, timeout=5.0, choices = None, default = False):
         answer = ''
         if not choices:
@@ -387,7 +415,7 @@ class Gpioneer (object):
                     self.compare_bitmask()
         except KeyboardInterrupt:
             raise       # clean up GPIO on CTRL+C exit
-        sys.exit(2)
+        sys.exit(0)
 
         
     #------------------------ CONFIG FUNCTIONS ---------------------------------
