@@ -1,0 +1,12 @@
+[Unit]
+Description=GPioneer-web
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/gpioneer/web-frontend
+ExecStart=/usr/bin/python app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
