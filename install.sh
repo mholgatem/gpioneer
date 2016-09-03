@@ -118,6 +118,7 @@ if [[ ! -z $(echo ${USER_INPUT} | grep -i y) ]]; then
 sudo python GPioneer.py -c
 clear
 fi
+systemctl daemon-reload
 systemctl start gpioneer
 systemctl start gpioneer-web
 
