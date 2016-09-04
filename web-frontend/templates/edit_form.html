@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<head>
+    <meta text/html;charset="utf-8">
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/css/main.css" rel="stylesheet">
+
+    <script type='application/javascript' src="/static/jquery.min.js"></script>
+    <script type='application/javascript' src="/static/bootstrap.min.js"></script>
+</head>
+
+<script>
+    $(function() {
+        var selectBox = $("[name='selectBox']")
+        
+        
+        //initialize
+        if(selectBox.val() == 'custom') {
+            $("[name='command']").val('');
+            $('#custom-row').show();
+        } else {
+            $("[name='command']").val(selectBox.val());
+            $('#custom-row').hide(); 
+        }
+        
+        //selection change
+        $("[name='selectBox']").change(function(){
+            if(selectBox.val() == 'custom') {
+                $("[name='command']").val('');
+                $('#custom-row').show(); 
+            } else {
+                $("[name='command']").val(selectBox.val());
+                $('#custom-row').hide(); 
+            } 
+        });
+    });
+
+</script>
+
+
+<body class="schedule edit" style="padding-top: 25px;">
+
+    <center>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissable fixed-bottom">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+              {{ message }}
+            </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    </center>
+
+    <form action="{{ url_for('schedule_edit') }}" method="POST">
+        <input type="hidden" name="id" value="{{ entry.id }}" />
+        <table style="width: 500px; text-align: right;">
+            <tbody>
+                <tr>
+                    <td><h1 class="blue-letterpress">Name</h1></td>
+                    <td>
+                        <div id="datepicker" class="input-append custom">
+                          <input class="box-letterpress blue-letterpress" type="text" name="name" onClick="this.select();" value="{{ entry.name }}" style = "width:295px;" ></input>
+                        </div>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td><h1 class="blue-letterpress">Command</h1></td>
+                    <td>
+                        <div class="styled-select blue semi-square" style="margin: 0 auto; text-align: center;">
+                                <select class="styled-select blue semi-square" name="selectBox">
+                                        <option value="custom">Custom Command</option>
+                                    {% for option in ecodes %}
+                                        <option value="{{ option }}" {% if option is equalto entry.command %}selected{% endif %}>{{ option }}</option>
+                                    {% endfor %}
+                                    </select>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr id="custom-row">
+                    <td><h1 class="blue-letterpress">Custom</h1></td>
+                    <td>
+                        <div id="datepicker" class="input-append custom">
+                          <input class="box-letterpress blue-letterpress" type="text" name="command" onClick="this.select();" style = "width:295px;" ></input>
+                         
+                        </div>
+                    </td>
+                </tr>
+                
+        
+                <tr>
+                    <td><h1 class="blue-letterpress">Pin(s)</h1><span>(comma separated)</span></td>
+                    <td>
+                        <div id="time-on" class="input-append date">
+                          <input class="box-letterpress blue-letterpress" type="text" name="pins" value="{{ entry.pins }}" style = "width:295px;" ></input>
+                          
+                        </div>
+                        
+                    </td>
+                </tr>
+        
+            </tbody>
+        </table>
+
+        <div id="row6" style="margin-top:-15px;">
+            <ul class="round-nav" style="padding:0;">
+                <li>
+                  <a href="#" onclick="$(this).closest('form').submit()">
+                    <span class="btn-icon-save blue-letterpress"></span>
+                    <span class="screen-reader-text">Home</span>
+                  </a>
+                </li>
+            </ul>
+        </div>
+    </form>
+</body>
+
+
+
+    
