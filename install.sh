@@ -27,7 +27,12 @@ sudo apt-get update
 echo
 echo "Installing Dependencies..."
 echo
-sudo apt-get -y install python python-dev python-requests python-pip
+
+#get pip then jinja 2.8, templates not compatible with newer versions of Jinja2
+sudo apt-get python-pip
+sudo pip install -I Jinja2==2.8
+
+sudo apt-get -y install python python-dev python-requests
 sudo apt-get -y install sqlite3
 sudo pip install flask flask-sqlalchemy flask-admin evdev
 sudo pip install evdev --upgrade
