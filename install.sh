@@ -29,7 +29,7 @@ echo "Installing Dependencies..."
 echo
 
 #get pip then jinja 2.8, templates not compatible with newer versions of Jinja2
-sudo apt-get python-pip
+sudo apt-get -y install python-pip
 sudo pip install -I Jinja2==2.8
 
 sudo apt-get -y install python python-dev python-requests
