@@ -16,7 +16,7 @@ That's it! The installer is still very much in the beta stage, so let me know if
 <h4>How to use</h4> After the installer runs, you will be prompted to run the configuration tool. You will be prompted to press each direction twice to register the correct gpio pins (note: after registering 'up', you can skip any configuration by pressing up twice). Then you will be prompted for Exit, start, select, coin and 6 general buttons. Multiple buttons pressed in unison will register as unique button presses, so button1, button2, or button1 + button2 together are all unique.
 After running the configuration, GPioneer will automatically run in the background. You can customize any buttons or add your own custom combos by going to the web interface on a local computer (Pi's ip address / if you have piplay installed, go to the 'database admin->GPioneer' section)
 
-If you want to assign multiple keystrokes or system commands to a single button, (in the web interface) separate them with '|' (pipe).
+If you want to assign multiple keystrokes or system commands to a single button, (in the web interface) separate them with ',' (comma).
 
 <h4>Advanced configuration</h4>
 /etc/rc.local has been modified to auto run GPioneer, add any of these flags to modify the runtime settings
