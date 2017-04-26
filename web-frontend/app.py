@@ -44,7 +44,7 @@ def schedule_form():
 @app.route('/delete', methods=['POST'])
 def schedule_delete():
     if 'id' in request.form:
-        c.execute('DELETE FROM gpioneer WHERE id = (?)',request.form['id'])
+        c.execute('DELETE FROM gpioneer WHERE id = (?)', (request.form['id'],) )
         conn.commit()
         reloadDaemon()
     return redirect(url_for('schedule_form'))
