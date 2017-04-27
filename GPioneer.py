@@ -144,9 +144,8 @@ class Gpioneer (object):
         DEBUG("Shutting down. Received signal {0}".format(signal))
         DEBUG("Closing GPioneer virtual device")
         self.ui.close()
-        DEBUG("Closing GPIO Pins")
-        pins = [pin['#'] for pin in self.PIN_LIST]
-        GPIO.cleanup(pins)
+        DEBUG("Cleaning up GPIO Pins")
+        GPIO.cleanup()
         print
         print 'Kaaaaahhhnn!'
         sys.exit(0)
