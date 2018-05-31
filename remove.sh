@@ -25,8 +25,8 @@ echo
 
 
 #remove supervisor/gunicorn-gpioneer config
-sudo rm -r /etc/supervisor/conf.d/gpioneer-web.conf
-sudo rm -r /etc/udev/rules.d/10-GPioneer.rules
+sudo rm -r /etc/supervisor/conf.d/gpioneer-web.conf || true
+sudo rm -r /etc/udev/rules.d/10-GPioneer.rules || true
 
 #remove GPioneer.py from /etc/rc.local
 if grep --quiet "GPioneer.py" /etc/rc.local; then
